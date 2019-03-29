@@ -1,5 +1,9 @@
 # Kotlin Generics
 
+## Definitions
+
+Through the text i will refer to both generic types and parameterized types. These words have different meanings in generic programming. Generic types refers to types that take paramererized types. Considering the type `List<E>`, `List` is the generic type and `E` is the paramererized type.
+
 ## General
 
 Generics are a features of many programming languages, that allow for declarations of classes, functions or similar constructions without knowing the types of the values acted upon by the declaration. 
