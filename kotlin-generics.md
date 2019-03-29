@@ -64,7 +64,7 @@ fun <T : Comparable<T>> sort(elements: Array<T>);
 fun <T : Comparable<T>> quicksort(elements: Array<T>, left: Int, right: Int);
 ```
 
-Here, the type parameter `T` is constrained to be a subtype of `Comparable<T>`. This means that any type that implements `Comparable<T>` can be sorted. The `compareTo` method on the `Comparable` type can then be used to compare to values of that type.
+Here, the type parameter `T` is constrained to be a subtype of `Comparable<T>`. This means that any type that implements `Comparable<T>` can be sorted. The `compareTo` method on the `Comparable` type can then be used to compare to values of that type. Had we not constrained the type `T`, we would only have the methods present on `Any`, and could therefore not call `compareTo`.
 
 ```kotlin
 // from the quicksort function
@@ -87,27 +87,57 @@ sort(doubles)
 
 ## Variance
 
-Variance decides on how subtyping affects generic classes. There are three main types of variance. 
+Variance decides on how subtyping affects generic classes. There are three main types of variance. Given a type `Box<E>` the following is true.
+
+- When `E` is covariant, `Box<Child>` is a subtype of `Box<Parent>`.
+- When `E` is contravariant, `Box<Parent>` is a subtype of `Box<Child>`.
+- When `E` is invariant, both `Box<Child>` and `Box<Parent>` are __not__ subtypes of each other.
+
+Type parameters can be marked covariant using the `out` keyword, and contravariant using the `in` keyword. Type parameters can both be used when declaring the type on (type parameter), or when using the type (on type arguments).
 
 ```kotlin
-interface Parent
-interface Child : Parent
+// During declaration
+interface Box<E>     // Invariant (default)
+interface Box<out E> // Covariant
+interface Box<in E>  // Contravariant
+
+// During invocation
+val invariant = new ArrayList<Number>()
+val covariant = new ArrayList<out Number>()
+val contravariant = new ArrayList<in Number>()
 ```
 
-- Covariance: When `Box` is covariant, `Box<Child>` is a subtype of `Box<Parent>`.
-- Contravariance: When `Box` is contravariant, `Box<Parent>` is a subtype of `Box<Child>`.
-- Invariance: When `Box` is invariant, both `Box<Child>` and `Box<Parent>` are __not__ subtypes of each other.
-
-Generics in Kotlin are by default invariant. Meaning that the below code will not compile, since `Box<Integer>` is not a subtype of `Box<Number>` even though `Integer` is a subtype of `Number`.
+Generics in Kotlin are invariant by default. Meaning that the below code will not compile, since `Box<Integer>` is not a subtype of `Box<Number>` even though `Integer` is a subtype of `Number`.
 
 ```kotlin
-class Box<T>();
+class Box<T>;
 
 val number  = Box<Number>()
 val integer = Box<Integer>()
 
 number = integer // error: type mismatch: inferred type is Variance.Box<Integer> but Variance.Box<Number> was expected
 ```
+
+Invariance is important because it limits the operations that can safely be performed on a generic type with a parameterized type. When a parameterized type is covariant it can be __retrieved__ from the generic type. When a parameterized type is contravatiant it can only be __inserted__ into the generic type.
+
+```kotlin
+fun both(elements: MutableList<String>) { // Invariant
+    elements.add() // Takes String
+    elements.get() // Returns String?
+}
+
+fun retrieve(elements: MutableList<out String>) { // Covariant
+    elements.add() // Takes Nothing
+    elements.get() // Returns String
+}
+
+fun insert(elements: MutableList<in String>) { // Contravariant
+    elements.add() // Takes String
+    elements.get() // Returns Any?
+}
+```
+
+The class `Nothing` cannot be instantiated, and the methods can therefore not be called.
 
 ## Type Erasure
 
