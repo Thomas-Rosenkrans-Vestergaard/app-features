@@ -191,7 +191,8 @@ class MyActivity : AppCompatActivity() {
         }
 
         /**
-         * Called when the status of some provider changes. For example, when the gps provider first finds a GPS fix.
+         * Called when the status of some provider changes. 
+         * For example, when the gps provider first finds a GPS fix.
          */
         override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
             print("Provider $provider had a status change.")
