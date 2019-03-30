@@ -59,8 +59,6 @@ Even if the user has granted permissions to location data, does guarantee that t
 
 ## Code
 
-
-
 ### `Location` data class
 
 Contains information about some position on earth. Instances of the class are returned from `LocationManager` methods. The most important properties on the class are:
@@ -73,45 +71,7 @@ Contains information about some position on earth. Instances of the class are re
 
 Note that all these are kotlin properties, backed by normal Java getters, ie. `getLongitude`.
 
-## `Criteria`
-
-A class indicating the application criteria for selecting a location provider. Providers may be ordered according to accuracy, power usage, ability to report altitude, speed, bearing, and monetary cost. Can be used to decide on the best possible location provider, based on the active providers and phone status.
-
-```kotlin
-/**
- * Returns location provider criteria for coarse positioning.
- */
-fun createCoarseCriteria(): Criteria {
-
-    val c = Criteria()
-    c.accuracy = Criteria.ACCURACY_COARSE
-    c.isAltitudeRequired = false
-    c.isBearingRequired = false
-    c.isSpeedRequired = false
-    c.isCostAllowed = true
-    c.powerRequirement = Criteria.POWER_HIGH
-    return c
-}
-
-/**
- * Returns location provider criteria for fine positioning.
- */
-fun createFineCriteria(): Criteria {
-
-    val c = Criteria()
-    c.accuracy = Criteria.ACCURACY_FINE
-    c.isAltitudeRequired = false
-    c.isBearingRequired = false
-    c.isSpeedRequired = false
-    c.isCostAllowed = true
-    c.powerRequirement = Criteria.POWER_HIGH
-    return c
-}
-```
-
-The `LocationManager.getBestProvider` method can then be used to calculate the best provider given the chosen criteria.
-
-## `LocationManager`
+## Using the `LocationManager` class
 
 > The `LocationManager` class provides access to the system location services. These services allow applications to obtain periodic updates of the device's geographical location, or to fire an application-specified Intent when the device enters the proximity of a given geographical location.
 
@@ -243,7 +203,67 @@ manager.requestLocationUpdates(provider, minTime, minDistance, listener) // list
 manager.removeUpdates(listener) // listener detached
 ```
 
-## Sources
+### Finding the best provider
 
-- [About the different location providers.](https://developerlife.com/2010/10/20/gps/)
-- [Enable network provider](https://stackoverflow.com/a/8602662)
+The `Criteria` class can be used by the application to indicate the criteria for selecting a location provider. Providers may be ordered according to accuracy, power usage, ability to report altitude, speed, bearing, and monetary cost. Can be used to decide on the best possible location provider, based on the active providers and phone status.
+
+```kotlin
+/**
+ * Returns location provider criteria for coarse positioning.
+ */
+fun createCoarseCriteria(): Criteria {
+
+    val c = Criteria()
+    c.accuracy = Criteria.ACCURACY_COARSE
+    c.isAltitudeRequired = false
+    c.isBearingRequired = false
+    c.isSpeedRequired = false
+    c.isCostAllowed = true
+    c.powerRequirement = Criteria.POWER_HIGH
+    return c
+}
+
+/**
+ * Returns location provider criteria for fine positioning.
+ */
+fun createFineCriteria(): Criteria {
+
+    val c = Criteria()
+    c.accuracy = Criteria.ACCURACY_FINE
+    c.isAltitudeRequired = false
+    c.isBearingRequired = false
+    c.isSpeedRequired = false
+    c.isCostAllowed = true
+    c.powerRequirement = Criteria.POWER_HIGH
+    return c
+}
+```
+
+The `LocationManager.getBestProvider` method can then be used to calculate the best provider given the chosen criteria.
+
+### Geocoding
+
+> Geocoding is the process of transforming a street address or other description of a location into a (latitude, longitude) coordinate. Reverse geocoding is the process of transforming a (latitude, longitude) coordinate into a (partial) address. The amount of detail in a reverse geocoded location description may vary, for example one might contain the full street address of the closest building, while another might contain only a city name and postal code.
+
+Geocoding is useful when translating positional data from machine to human language, or vice versa. I will be using the `android.location.Geocoder` class to perform reverse geocoding.
+
+#### `GeoCoder.getFromLocation`
+
+```java
+public List<Address> getFromLocation(double latitude, double longitude, int maxResults)
+```
+
+The `getFromLocation` method returns a list of `Address` instances, based on the provided `latitude` and `longitude`. The `maxResults` parameter can additionally be used to limit the number of returned addresses. Most of the time, setting `maxResults = 1` is adequate.
+
+#### `Address`
+
+https://developer.android.com/reference/android/location/Address
+
+The address class obviously contains information about some address, the most inportant properties are the following:
+
+- `countryName` The name of the country.
+- `locality` The name of the locality (city).
+- `postalCode` The post code.
+- `featureName` The name of any near features or landmarks.
+- `locale` Returns the locale (language) of the address.
+- `addressLines` Contains street and street number information.
