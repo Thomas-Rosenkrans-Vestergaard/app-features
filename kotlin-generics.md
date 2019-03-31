@@ -223,8 +223,4 @@ println(example.returnIfTrue(false)) // null
 
 ## Type Erasure
 
-Type Erasure means that the compiler will remove all parameterized types during compilation. The parameterized types are replaced by their actual runtime types. Because of this, it is impossible to find the type of a parameterized type during runtime.
-
-```kotlin
-fun 
-```
+Type Erasure means that the compiler will remove all parameterized types during compilation. The parameterized types are replaced by their actual runtime types. Because of this, it is impossible to find the actual type of a parameterized type during runtime.
