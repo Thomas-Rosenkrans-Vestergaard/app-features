@@ -188,7 +188,7 @@ fun <T> move(source: List<T>, destination: MutableList<in T>) {
         destination.add(value)
 }
 
-val students = mutableListOf(Student("Thomas"), Student("Jonas"))
+val students = mutableListOf(Student("Thomas"), Student("Jonas"), Student("Malik"))
 val teachers = mutableListOf(Teacher("Anders"))
 val fieldtrip = mutableListOf<Person>()
 
@@ -224,3 +224,30 @@ println(example.returnIfTrue(false)) // null
 ## Type Erasure
 
 Type Erasure means that the compiler will remove all parameterized types during compilation. The parameterized types are replaced by their actual runtime types. Because of this, it is impossible to find the actual type of a parameterized type during runtime.
+
+```kotlin
+fun <T> List<out T>.first() : T? {
+    var returnValue : T? = null
+    if(this.size > 0) 
+        returnValue = this.get(0)
+    else
+        returnValue = null
+    
+    return returnValue
+}
+
+val strings = listOf("A", "B", "C")
+val first = strings.first()
+```
+
+The above code would during runtime be equivalent to the following, since the parameterized type `T` was replaced by the actual runtime type `String`. 
+
+```kotlin
+var returnValue : String? = null
+if(this.size > 0) 
+    returnValue = this.get(0)
+else
+    returnValue = null
+    
+return returnValue
+```
