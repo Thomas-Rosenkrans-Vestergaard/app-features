@@ -251,3 +251,17 @@ else
     
 return returnValue
 ```
+
+If you need the concrete type of a provided value at runtime, you must give the compiler additional type-information.
+
+```kotlin
+
+private fun <T> accept(t: Class<T>, elements: List<T>){
+    print(t.getName())
+}
+
+fun main(){
+    val strings = listOf("Hej", "Med", "Dig")
+    accept(String::class.java, strings) // java.lang.String
+}
+```
