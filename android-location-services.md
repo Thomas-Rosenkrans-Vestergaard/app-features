@@ -203,6 +203,18 @@ manager.requestLocationUpdates(provider, minTime, minDistance, listener) // list
 manager.removeUpdates(listener) // listener detached
 ```
 
+The listeners are __not__ automatically removed, if the activity is destroyed. You must manually remove the listener. This can easily be done by using the `onDestroy` method on `AppCompatActivity`.
+
+```kotlin
+/**
+    * Remove the active listener.
+    */
+override fun onDestroy() {
+    super.onDestroy()
+    locationManager.removeUpdates(this)
+}
+```
+
 ### Finding the best provider
 
 The `Criteria` class can be used by the application to indicate the criteria for selecting a location provider. Providers may be ordered according to accuracy, power usage, ability to report altitude, speed, bearing, and monetary cost. Can be used to decide on the best possible location provider, based on the active providers and phone status.
